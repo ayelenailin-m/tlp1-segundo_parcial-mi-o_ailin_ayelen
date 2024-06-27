@@ -1,7 +1,6 @@
 /*
 Escenario Gestión de Libros:
 Desarrolla un servidor Express que permita gestionar una lista de libros. Implementa las siguientes rutas:
-GET /books/:id Devuelve un único libro según el id recibido por parámetro (params).
 POST /books/: Permite agregar un nuevo libro. El libro debe tener un id único, un title, un author, y un year.
 PUT /books/:id : Permite actualizar el título, autor y año de publicación de un libro existente.
 DELETE /books/:id : Permite eliminar un libro por su id.
@@ -25,8 +24,15 @@ app.get("/books/:id", (req, res) => {
     const getBook = database.find((book) => book.id === id);
     if (getBook) {
         res.json(getBook);
-    } 
-    res.json({"mensaje": "El libro no existe"});
+    }
+    res.json({ "mensaje": "El libro no existe" });
+});
+// Crear un nuevo libro
+app.post("/books/", (req, res) => {
+    const { id, título, autor, año } = req.body;
+    database.push({ id: id, título: título, autor: autor, año: año });
+
+    res.json({ message: "Libro creado con éxito" });
 });
 
 
