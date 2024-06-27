@@ -1,8 +1,3 @@
-/*
-Escenario Gestión de Libros:
-Desarrolla un servidor Express que permita gestionar una lista de libros. Implementa las siguientes rutas:
-DELETE /books/:id : Permite eliminar un libro por su id.
-*/
 // Inicio el servidor
 const express = require("express");
 const database = require("./database");
@@ -12,6 +7,10 @@ const app = express();
 app.use(express.json());
 
 // Creo las rutas
+// Página de inicio
+app.get("/", (req, res) => {
+    res.send("<h1>Hola, bienvenido a mi librería. ¿Cómo querés proceder?</h1>");
+});
 // Obtener todos los libros
 app.get("/books/", (req, res) => {
     res.json(database);
@@ -39,19 +38,29 @@ app.put("/books/:id", (req, res) => {
 
     const editarLibro = database.find((book) => book.id === id);
 
-    if (editarLibro){
-    editarLibro.título = título;
-    editarLibro.autor = autor;
-    editarLibro.año = año;
-    res.json({ message: "Libro actualizado" });
-    } 
-    res.json({ mensaje: "El libro que quiere modificar no existe"});
+    if (editarLibro) {
+        editarLibro.título = título;
+        editarLibro.autor = autor;
+        editarLibro.año = año;
+        res.json({ message: "Libro actualizado" });
+    } else {
+        res.json({ mensaje: "El libro que quiere modificar no existe" });
+    }
 });
+// Eliminar un libro por su id
+app.delete("/books/:id", (req, res) => {
+    const id = parseInt(req.params.id);
 
+    const getBook = database.find((título) => título.id === id);
+    if (!getBook) {
+        res.json("El libro que quiere eliminar no existe")
+    } else {
+        const bookIndex = database.indexOf(getBook);
+        const deleteBook = database.splice(bookIndex, 1);
 
-
-
-
+        res.json({ mensaje: "Libro borrado con exito", deleteBook });
+    }
+});
 
 // Corro el servidor
 const PORT = process.env.PORT || 3000;
