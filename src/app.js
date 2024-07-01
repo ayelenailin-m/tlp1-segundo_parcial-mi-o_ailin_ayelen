@@ -6,6 +6,10 @@ const app = express();
 // Usar middleware
 app.use(express.json());
 
+const generateId = () => {
+    return new Date().getTime()
+}
+
 // Creo las rutas
 // Página de inicio
 app.get("/", (req, res) => {
@@ -21,27 +25,29 @@ app.get("/books/:id", (req, res) => {
     const getBook = database.find((book) => book.id === id);
     if (getBook) {
         res.json(getBook);
-    }
+    } else
     res.json({ "mensaje": "El libro no existe" });
 });
 // Crear un nuevo libro
 app.post("/books/", (req, res) => {
-    const { id, título, autor, año } = req.body;
-    database.push({ id: id, título: título, autor: autor, año: año });
+    const id = generateId()
+    const { title, author, year } = req.body;
+    database.push({ id: id, title: title, author: author, year: year });
 
     res.json({ message: "Libro creado con éxito" });
 });
 // Modificar o actualizar un libro
 app.put("/books/:id", (req, res) => {
     const id = parseInt(req.params.id);
-    const { título, autor, año } = req.body;
+    const { title, author, year } = req.body;
+
 
     const editarLibro = database.find((book) => book.id === id);
 
     if (editarLibro) {
-        editarLibro.título = título;
-        editarLibro.autor = autor;
-        editarLibro.año = año;
+        editarLibro.title = title;
+        editarLibro.author = author;
+        editarLibro.year = year;
         res.json({ message: "Libro actualizado" });
     } else {
         res.json({ mensaje: "El libro que quiere modificar no existe" });
@@ -63,5 +69,4 @@ app.delete("/books/:id", (req, res) => {
 });
 
 // Corro el servidor
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor corriendo en puerto:${PORT}`));
+app.listen(3000, console.log("Servidor corriendo en el puerto 3000"));
